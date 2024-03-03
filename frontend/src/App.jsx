@@ -1,33 +1,21 @@
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 import './App.css'
 
 function App() {
 
   const [password, setPassword] = useState('');
   const generatePassword = () =>{
-  const length = 12;
-  const numbers = "0123456789";
-  const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
-  const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const specialCharacters = "!@#$%^&*()_+";
-  let password = "";
-
-  // Ensure password contains at least one of each required character type
-  password += numbers.charAt(Math.floor(Math.random() * numbers.length));
-  password += lowerCaseLetters.charAt(Math.floor(Math.random() * lowerCaseLetters.length));
-  password += upperCaseLetters.charAt(Math.floor(Math.random() * upperCaseLetters.length));
-  password += specialCharacters.charAt(Math.floor(Math.random() * specialCharacters.length));
-
-  // Fill the rest of the password length with random characters from all types
-  const allCharacters = numbers + lowerCaseLetters + upperCaseLetters + specialCharacters;
-  for (let i = password.length; i < length; i++) {
-    password += allCharacters.charAt(Math.floor(Math.random() * allCharacters.length));
-  }
-
-  // Shuffle the password to mix the initial characters
-  password = password.split('').sort(() => 0.5 - Math.random()).join('');
-  setPassword(password);
-  console.log(password);
+    axios.get('http://localhost:8080/newpassword').then((res, err) => {
+      if(err){
+        console.log("in err: ", err)
+        setPassword('');
+      }
+      else{
+        console.log(res.data.password)
+        setPassword(res.data.password)
+      }
+    })
   }
 
   useEffect(()=>{
@@ -46,7 +34,7 @@ function App() {
         <div>
           <div style={{marginTop: '20px'}}>
             {password}
-          <button onClick={copyPassword} style={{marginLeft: '20px'}}><i class="fa-solid fa-copy"></i></button>
+          <button onClick={copyPassword} style={{marginLeft: '20px'}}><i className="fa-solid fa-copy"></i></button>
           </div>
         </div>
       </div>
